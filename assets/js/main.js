@@ -142,7 +142,7 @@ const project = (lat, lon) => {
   const m = Math.log(Math.tan(Math.PI / 4 + (lat * Math.PI) / 360));
   return [27.381071652502083 * lon - 1767.123674840038, -1568.6441448290477 * m + 1139.9190289622813];
 };
-const LABEL_SIDE = { Mumbai: "left", Mysore: "left", Pune: "right", Bangalore: "below", Hyderabad: "right", Delhi: "right" };
+const LABEL_SIDE = { Mumbai: "left", Mysore: "left", Ooty: "below", Pune: "right", Bangalore: "above", Hyderabad: "right", Delhi: "right" };
 
 async function initDeathMap(root, { compact = false } = {}) {
   const [data, svgText] = await Promise.all([loadDeaths(), fetch("assets/img/india.svg").then((r) => r.text())]);
@@ -214,9 +214,10 @@ async function initDeathMap(root, { compact = false } = {}) {
       c.classList.toggle("zero", !v);
       const side = LABEL_SIDE[t.id] || "right";
       const y0 = Number(c.getAttribute("cy"));
-      lb.setAttribute("x", side === "left" ? x - r - 6 : side === "below" ? x : x + r + 6);
-      lb.setAttribute("y", side === "below" ? y0 + r + 18 : y0 + 6);
-      lb.setAttribute("text-anchor", side === "left" ? "end" : side === "below" ? "middle" : "start");
+      const vert = side === "below" || side === "above";
+      lb.setAttribute("x", side === "left" ? x - r - 6 : vert ? x : x + r + 6);
+      lb.setAttribute("y", side === "below" ? y0 + r + 18 : side === "above" ? y0 - r - 7 : y0 + 6);
+      lb.setAttribute("text-anchor", side === "left" ? "end" : vert ? "middle" : "start");
       lb.textContent = `${t.id} ${v}`;
     });
     const rows = data.tracks.map((t) => ({ t, v: data.count(t.id, year) })).sort((a, b) => b.v - a.v);
@@ -267,7 +268,7 @@ function postCard(p) {
 function memorialCard(m) {
   const img = m.image ? `<img class="card-img" src="${m.image}" alt="${esc(titleCase(m.name))}" loading="lazy">` : `<div class="card-ph"><img src="assets/img/logo.png" alt=""></div>`;
   return `<button class="card memorial-card" data-slug="${m.slug}">${img}<div class="card-body">
-    <h3>${esc(m.name)}</h3>
+    <h3>${esc(m.name)}</h3>${m.note ? `<div class="meta" style="text-transform:none">${esc(m.note)}</div>` : ""}
     <div class="meta">${fmtDate(m.date)} &middot; ${esc(m.track)}</div>
     <p>${esc(m.incident)}</p></div></button>`;
 }
@@ -362,7 +363,7 @@ const pages = {
     const docs = [
       ...STATIC_PAGES,
       ...posts.map((p) => ({ title: p.title, type: "Blog", url: `blog.html?slug=${p.slug}`, text: p.excerpt + " " + p.content })),
-      ...mems.map((m) => ({ title: m.name, type: "Memorial", url: `memorials.html#${m.slug}`, text: `${m.track} ${m.date.slice(0, 4)} ${m.incident} ${m.outcome}` })),
+      ...mems.map((m) => ({ title: m.name, type: "Memorial", url: `memorials.html#${m.slug}`, text: `${m.note} ${m.track} ${m.date.slice(0, 4)} ${m.incident} ${m.outcome} ${m.officialReport}` })),
       ...secs.map((s) => ({ title: s.title, type: "What is horseracing?", url: `what-is-horseracing.html#${s.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")}`, text: s.content }))
     ];
     const terms = q.toLowerCase().split(/\s+/).filter(Boolean);
@@ -403,7 +404,7 @@ function openMemorial(m) {
   if (!dlg) { dlg = document.createElement("dialog"); dlg.id = "memorial-dialog"; document.body.append(dlg); dlg.addEventListener("click", (e) => e.target === dlg && dlg.close()); }
   const img = m.image ? `<img class="card-img" src="${m.image}" alt="${esc(titleCase(m.name))}">` : "";
   dlg.innerHTML = `<button class="close" aria-label="Close">&times;</button>${img}<div class="card-body">
-    <div class="eyebrow">In memory of</div><h2>${esc(m.name)}</h2>
+    <div class="eyebrow">In memory of</div><h2>${esc(m.name)}</h2>${m.note ? `<p class="meta" style="text-transform:none">${esc(m.note)}</p>` : ""}
     <dl class="dl">
       <dt>Date</dt><dd>${fmtDate(m.date)}</dd>
       <dt>Racetrack</dt><dd>${esc(m.track)}</dd>
@@ -411,7 +412,11 @@ function openMemorial(m) {
       ${m.colorSex ? `<dt>Color / sex</dt><dd>${esc(describeColorSex(m.colorSex))}</dd>` : ""}
       <dt>Injury</dt><dd>${esc(m.incident)}</dd>
       ${m.outcome ? `<dt>Outcome</dt><dd>${esc(m.outcome)}</dd>` : ""}
-    </dl></div>`;
+      ${m.confirmedBy ? `<dt>Confirmed by</dt><dd>${esc(m.confirmedBy)}</dd>` : ""}
+    </dl>
+    ${m.officialReport ? `<h3 class="mt" style="font-size:1rem">Incident report</h3><p style="white-space:pre-line;font-size:.92rem">${esc(m.officialReport)}</p>` : ""}
+    <p class="btn-row mt">${[["reportLink", "Source report"], ["video", "Race video"], ["horseData", "Racing record"]].filter(([k]) => /^https?:/.test(m[k] || "")).map(([k, l]) => `<a class="btn btn--outline" href="${esc(m[k])}" target="_blank" rel="noopener">${l}</a>`).join("")}</p>
+    </div>`;
   $(".close", dlg).addEventListener("click", () => dlg.close());
   dlg.showModal();
   history.replaceState(null, "", "#" + m.slug);

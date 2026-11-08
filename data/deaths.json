@@ -1,7 +1,6 @@
 {
- "_note": "INTERIM DATA. Counts below are computed only from the memorial records in memorials.json (Ooty excluded). Replace 'records' with the full dataset and set 'interim' to false.",
- "interim": true,
- "source": "Erase Horseracing India memorial records",
+ "interim": false,
+ "source": "Erase Horseracing India records, compiled from racing club incident reports and news sources",
  "tracks": [
   {
    "id": "Bangalore",
@@ -50,27 +49,43 @@
    "name": "Royal Calcutta Turf Club",
    "lat": 22.5385,
    "lon": 88.3327
+  },
+  {
+   "id": "Ooty",
+   "name": "Ooty Race Course",
+   "lat": 11.4062,
+   "lon": 76.695
   }
  ],
  "records": [
   {
    "track": "Bangalore",
    "year": 2024,
-   "deaths": 1
+   "deaths": 2
   },
   {
    "track": "Bangalore",
    "year": 2025,
-   "deaths": 5
+   "deaths": 11
+  },
+  {
+   "track": "Bangalore",
+   "year": 2026,
+   "deaths": 3
   },
   {
    "track": "Chennai",
    "year": 2024,
-   "deaths": 2
+   "deaths": 3
   },
   {
    "track": "Chennai",
    "year": 2025,
+   "deaths": 3
+  },
+  {
+   "track": "Delhi",
+   "year": 2026,
    "deaths": 2
   },
   {
@@ -79,9 +94,14 @@
    "deaths": 1
   },
   {
+   "track": "Hyderabad",
+   "year": 2026,
+   "deaths": 3
+  },
+  {
    "track": "Kolkata",
    "year": 2025,
-   "deaths": 1
+   "deaths": 3
   },
   {
    "track": "Mumbai",
@@ -91,7 +111,7 @@
   {
    "track": "Mumbai",
    "year": 2026,
-   "deaths": 3
+   "deaths": 2
   },
   {
    "track": "Mysore",
@@ -102,6 +122,16 @@
    "track": "Mysore",
    "year": 2025,
    "deaths": 1
+  },
+  {
+   "track": "Mysore",
+   "year": 2026,
+   "deaths": 2
+  },
+  {
+   "track": "Ooty",
+   "year": 2024,
+   "deaths": 2
   },
   {
    "track": "Pune",
@@ -116,6 +146,11 @@
   {
    "track": "Pune",
    "year": 2025,
+   "deaths": 2
+  },
+  {
+   "track": "Pune",
+   "year": 2026,
    "deaths": 3
   }
  ]
