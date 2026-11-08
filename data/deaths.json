@@ -1,0 +1,122 @@
+{
+ "_note": "INTERIM DATA. Counts below are computed only from the memorial records in memorials.json (Ooty excluded). Replace 'records' with the full dataset and set 'interim' to false.",
+ "interim": true,
+ "source": "Erase Horseracing India memorial records",
+ "tracks": [
+  {
+   "id": "Bangalore",
+   "name": "Bangalore Turf Club",
+   "lat": 12.9857,
+   "lon": 77.5878
+  },
+  {
+   "id": "Chennai",
+   "name": "Madras Race Club, Guindy",
+   "lat": 13.0067,
+   "lon": 80.2206
+  },
+  {
+   "id": "Mysore",
+   "name": "Mysore Race Club",
+   "lat": 12.2958,
+   "lon": 76.668
+  },
+  {
+   "id": "Pune",
+   "name": "Royal Western India Turf Club, Pune",
+   "lat": 18.5308,
+   "lon": 73.8865
+  },
+  {
+   "id": "Mumbai",
+   "name": "Mahalaxmi Racecourse",
+   "lat": 18.9827,
+   "lon": 72.8193
+  },
+  {
+   "id": "Delhi",
+   "name": "Delhi Race Club",
+   "lat": 28.5925,
+   "lon": 77.2003
+  },
+  {
+   "id": "Hyderabad",
+   "name": "Hyderabad Race Club, Malakpet",
+   "lat": 17.3726,
+   "lon": 78.5047
+  },
+  {
+   "id": "Kolkata",
+   "name": "Royal Calcutta Turf Club",
+   "lat": 22.5385,
+   "lon": 88.3327
+  }
+ ],
+ "records": [
+  {
+   "track": "Bangalore",
+   "year": 2024,
+   "deaths": 1
+  },
+  {
+   "track": "Bangalore",
+   "year": 2025,
+   "deaths": 5
+  },
+  {
+   "track": "Chennai",
+   "year": 2024,
+   "deaths": 2
+  },
+  {
+   "track": "Chennai",
+   "year": 2025,
+   "deaths": 2
+  },
+  {
+   "track": "Hyderabad",
+   "year": 2025,
+   "deaths": 1
+  },
+  {
+   "track": "Kolkata",
+   "year": 2025,
+   "deaths": 1
+  },
+  {
+   "track": "Mumbai",
+   "year": 2025,
+   "deaths": 2
+  },
+  {
+   "track": "Mumbai",
+   "year": 2026,
+   "deaths": 3
+  },
+  {
+   "track": "Mysore",
+   "year": 2024,
+   "deaths": 2
+  },
+  {
+   "track": "Mysore",
+   "year": 2025,
+   "deaths": 1
+  },
+  {
+   "track": "Pune",
+   "year": 2023,
+   "deaths": 1
+  },
+  {
+   "track": "Pune",
+   "year": 2024,
+   "deaths": 2
+  },
+  {
+   "track": "Pune",
+   "year": 2025,
+   "deaths": 3
+  }
+ ]
+}
