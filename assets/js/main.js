@@ -41,7 +41,7 @@ const $$ = (s, el = document) => [...el.querySelectorAll(s)];
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const fmtDate = (iso) => new Date(iso + "T00:00:00").toLocaleDateString("en-US", { day: "numeric", month: "short", year: "numeric" });
 const cache = {};
-const getJSON = (p) => (cache[p] ||= fetch(p).then((r) => { if (!r.ok) throw new Error(p); return r.json(); }));
+const getJSON = (p) => (cache[p] ||= fetch(p, { cache: "no-cache" }).then((r) => { if (!r.ok) throw new Error(p); return r.json(); }));
 const titleCase = (s) => s.toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase());
 const SEX = { m: "mare", f: "filly", g: "gelding", h: "horse", c: "colt" };
 const COLOR = { b: "bay", dkb: "dark bay", ch: "chestnut", gr: "gray", br: "brown", blk: "black" };
