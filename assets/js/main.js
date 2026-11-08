@@ -96,9 +96,8 @@ function renderLayout() {
           <p>A grassroots movement to end horseracing and protect horses in India.</p>
           ${socialLinks("socials--light")}
         </div>
-        <div><h4>Explore</h4><ul>${SITE.nav.slice(0, 5).map((n) => `<li><a href="${n.href}">${n.label}</a></li>`).join("")}</ul></div>
+        <div><h4>Explore</h4><ul>${[...SITE.nav.slice(0, 5), { label: "Blogs", href: "blogs.html" }].map((n) => `<li><a href="${n.href}">${n.label}</a></li>`).join("")}</ul></div>
         <div><h4>Get involved</h4><ul>
-          <li><a href="blogs.html">Blogs</a></li>
           <li><a href="take-action.html#pledge">Take the pledge</a></li>
           <li><a href="contact.html">Volunteer with us</a></li>
           <li><a href="contact.html">Report an incident</a></li>
@@ -348,7 +347,7 @@ const pages = {
         ? `<div class="blurred" style="height:100%"><img src="${s.image}" alt="${esc(s.title)}" loading="lazy"><div class="reveal"><b>Sensitive image</b><button class="btn btn--light" type="button">Reveal image</button></div></div>`
         : `<img src="${s.image}" alt="${esc(s.title)}" loading="lazy">`;
       return `<article class="ex-item" id="${id(s)}">${media ? `<div class="ex-media">${media}</div>` : ""}
-        <div class="ex-text"${media ? "" : ' style="grid-column:1/-1"'}><div class="num">${String(i + 1).padStart(2, "0")}</div><h2>${esc(s.title)}</h2>${renderContent(s.content)}</div></article>`;
+        <div class="ex-text"${media ? "" : ' style="grid-column:1/-1"'}><div class="num">${String(i + 1).padStart(2, "0")}</div><h2>${esc(s.title)}</h2>${renderContent(s.content)}${s.credits ? `<p class="credits">Credits: ${inlineLinks(s.credits)}</p>` : ""}</div></article>`;
     }).join("");
     $$(".reveal button").forEach((b) => b.addEventListener("click", () => { const w = b.closest(".blurred"); w.classList.remove("blurred"); b.parentElement.remove(); }));
     if (location.hash) document.getElementById(location.hash.slice(1))?.scrollIntoView();
@@ -363,8 +362,8 @@ const pages = {
     const docs = [
       ...STATIC_PAGES,
       ...posts.map((p) => ({ title: p.title, type: "Blog", url: `blog.html?slug=${p.slug}`, text: p.excerpt + " " + p.content })),
-      ...mems.map((m) => ({ title: m.name, type: "Memorial", url: `memorials.html#${m.slug}`, text: `${m.note} ${m.track} ${m.date.slice(0, 4)} ${m.incident} ${m.outcome} ${m.officialReport}` })),
-      ...secs.map((s) => ({ title: s.title, type: "What is horseracing?", url: `what-is-horseracing.html#${s.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")}`, text: s.content }))
+      ...mems.map((m) => ({ title: m.name, type: "Memorial", url: `memorials.html#${m.slug}`, text: `${m.note} ${m.track} ${m.date.slice(0, 4)} ${m.incident} ${m.outcome}` })),
+      ...secs.map((s) => ({ title: s.title, type: "What is horseracing?", url: `what-is-horseracing.html#${s.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")}`, text: stripLinks(s.content) }))
     ];
     const terms = q.toLowerCase().split(/\s+/).filter(Boolean);
     const hits = docs.map((d) => {
@@ -383,19 +382,35 @@ const pages = {
 };
 
 const STATIC_PAGES = [
-  { title: "About us", type: "Page", url: "about.html", text: "mission vision team founder president advisors legal policy strategy finance communications approach investigation advocacy" },
+  { title: "About us", type: "Page", url: "about.html", text: "mission vision approach legislative action investigation advocacy" },
   { title: "Death Map", type: "Page", url: "death-map.html", text: "death count map racetracks Bangalore Chennai Mysore Pune Mumbai Delhi Hyderabad Kolkata year statistics" },
   { title: "Take Action", type: "Page", url: "take-action.html", text: "pledge boycott sign email subscription newsletter sign up social media" },
   { title: "Contact", type: "Page", url: "contact.html", text: "contact volunteer report an incident write to us email" }
 ];
 
 /* Turn plain text into paragraphs, with YouTube embeds and clickable links */
+/* [text](url) becomes a link; bare URLs become links too */
+function inlineLinks(t) {
+  const parts = [];
+  let last = 0;
+  const re = /\[([^\]]+)\]\((https?:\/\/[^\s)]+(?:\([^\s)]*\))?[^\s)]*)\)/g;
+  let m;
+  while ((m = re.exec(t))) {
+    parts.push(esc(t.slice(last, m.index)).replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener">$1</a>'));
+    parts.push(`<a href="${esc(m[2])}" target="_blank" rel="noopener">${esc(m[1])}</a>`);
+    last = re.lastIndex;
+  }
+  parts.push(esc(t.slice(last)).replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener">$1</a>'));
+  return parts.join("");
+}
+const stripLinks = (t) => t.replace(/\[([^\]]+)\]\([^)]*\)/g, "$1");
+
 function renderContent(text) {
   return text.split(/\n{2,}/).map((para) => {
     const t = para.trim();
     const yt = t.match(/^https?:\/\/(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|shorts\/))([\w-]{11})\S*$/);
     if (yt) return `<div class="video${t.includes("/shorts/") ? " short" : ""}"><iframe src="https://www.youtube-nocookie.com/embed/${yt[1]}" title="Video" loading="lazy" allowfullscreen></iframe></div>`;
-    return `<p>${esc(t).replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener">$1</a>')}</p>`;
+    return `<p>${inlineLinks(t)}</p>`;
   }).join("");
 }
 
@@ -414,8 +429,7 @@ function openMemorial(m) {
       ${m.outcome ? `<dt>Outcome</dt><dd>${esc(m.outcome)}</dd>` : ""}
       ${m.confirmedBy ? `<dt>Confirmed by</dt><dd>${esc(m.confirmedBy)}</dd>` : ""}
     </dl>
-    ${m.officialReport ? `<h3 class="mt" style="font-size:1rem">Incident report</h3><p style="white-space:pre-line;font-size:.92rem">${esc(m.officialReport)}</p>` : ""}
-    <p class="btn-row mt">${[["reportLink", "Source report"], ["video", "Race video"], ["horseData", "Racing record"]].filter(([k]) => /^https?:/.test(m[k] || "")).map(([k, l]) => `<a class="btn btn--outline" href="${esc(m[k])}" target="_blank" rel="noopener">${l}</a>`).join("")}</p>
+    <p class="btn-row mt">${[["reportLink", "Source report"], ["horseData", "Racing record"], ["socialPost", "More details"]].filter(([k]) => /^https?:/.test(m[k] || "")).map(([k, l]) => `<a class="btn btn--outline" href="${esc(m[k])}" target="_blank" rel="noopener">${l}</a>`).join("")}</p>
     </div>`;
   $(".close", dlg).addEventListener("click", () => dlg.close());
   dlg.showModal();
