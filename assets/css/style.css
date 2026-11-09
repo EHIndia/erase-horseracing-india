@@ -252,7 +252,10 @@ dialog .close { position: absolute; top: 10px; right: 10px; background: var(--bl
 .prose { max-width: 760px; margin: 0 auto; background: var(--white); padding: 40px clamp(20px, 5vw, 56px); border-radius: var(--radius); box-shadow: var(--shadow); }
 .prose p { white-space: pre-line; }
 .prose .video { aspect-ratio: 16 / 9; margin: 0 0 1.4em; }
-.prose .video.short { aspect-ratio: 9 / 16; max-width: 360px; }
+.prose .video.short { aspect-ratio: 9 / 16; max-width: 360px; margin-left: auto; margin-right: auto; }
+.prose .post-image { width: 100%; height: auto; border-radius: 8px; margin: 0 0 1.4em; }
+.prose ul { margin: 0 0 1em; padding-left: 1.3em; }
+.prose li { margin-bottom: 4px; }
 .prose .video iframe { width: 100%; height: 100%; border: 0; border-radius: 8px; }
 .back { display: inline-block; margin-bottom: 18px; font-weight: 700; font-family: var(--font-head); text-decoration: none; }
 
@@ -283,3 +286,7 @@ dialog .close { position: absolute; top: 10px; right: 10px; background: var(--bl
 
 .credits { font-size: .82rem; color: var(--muted); font-style: italic; margin-top: 14px; }
 .ex-text a { color: var(--rust); font-weight: 600; }
+
+.al-justify { text-align: justify; hyphens: auto; -webkit-hyphens: auto; }
+.al-center { text-align: center; }
+.al-right { text-align: right; }

@@ -256,8 +256,17 @@ async function initDeathMap(root, { compact = false } = {}) {
 }
 
 /* ---------- cards ---------- */
+/* Card image: the post's own image, else its YouTube video thumbnail, else the logo */
+function postYouTube(p) {
+  if (p.media && p.media.youtube) return p.media.youtube;
+  const m = (p.content || "").match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|shorts\/))([\w-]{11})/);
+  return m ? m[1] : null;
+}
 function postCard(p) {
-  const img = p.image ? `<img class="card-img" src="${p.image}" alt="" loading="lazy">` : `<div class="card-ph"><img src="assets/img/logo.png" alt=""></div>`;
+  const yt = postYouTube(p);
+  const img = p.image ? `<img class="card-img" src="${p.image}" alt="" loading="lazy">`
+    : yt ? `<img class="card-img" src="https://i.ytimg.com/vi/${yt}/hqdefault.jpg" alt="" loading="lazy">`
+    : `<div class="card-ph"><img src="assets/img/logo.png" alt=""></div>`;
   return `<article class="card">${img}<div class="card-body">
     <div class="meta">${fmtDate(p.date)} &middot; ${esc(p.category)}</div>
     <h3><a href="blog.html?slug=${encodeURIComponent(p.slug)}">${esc(p.title)}</a></h3>
@@ -333,7 +342,10 @@ const pages = {
     document.title = `${p.title} | ${SITE.name}`;
     $("#post-title").textContent = p.title;
     $("#post-meta").textContent = `${fmtDate(p.date)} · ${p.category} · ${p.author}`;
-    el.innerHTML = renderContent(p.content);
+    let media = "";
+    if (p.media && p.media.youtube) media = `<div class="video${p.media.short ? " short" : ""}"><iframe src="https://www.youtube-nocookie.com/embed/${p.media.youtube}" title="${esc(p.title)} video" loading="lazy" allowfullscreen></iframe></div>`;
+    else if (p.media && p.media.image) media = `<img class="post-image" src="${p.media.image}" alt="">`;
+    el.innerHTML = media + renderContent(p.content);
   },
 
   async explainer() {
@@ -361,7 +373,7 @@ const pages = {
     const [posts, mems, secs] = await Promise.all(["data/posts.json", "data/memorials.json", "data/sections.json"].map(getJSON));
     const docs = [
       ...STATIC_PAGES,
-      ...posts.map((p) => ({ title: p.title, type: "Blog", url: `blog.html?slug=${p.slug}`, text: p.excerpt + " " + p.content })),
+      ...posts.map((p) => ({ title: p.title, type: "Blog", url: `blog.html?slug=${p.slug}`, text: p.excerpt + " " + stripLinks(p.content) })),
       ...mems.map((m) => ({ title: m.name, type: "Memorial", url: `memorials.html#${m.slug}`, text: `${m.note} ${m.track} ${m.date.slice(0, 4)} ${m.incident} ${m.outcome}` })),
       ...secs.map((s) => ({ title: s.title, type: "What is horseracing?", url: `what-is-horseracing.html#${s.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")}`, text: stripLinks(s.content) }))
     ];
@@ -389,6 +401,8 @@ const STATIC_PAGES = [
 ];
 
 /* Turn plain text into paragraphs, with YouTube embeds and clickable links */
+/* **bold** and *italic* (applied after escaping) */
+const fmt = (h) => h.replace(/\*\*([^*]+?)\*\*/g, "<strong>$1</strong>").replace(/(^|[^*])\*([^*\s][^*]*?)\*(?!\*)/g, "$1<em>$2</em>");
 /* [text](url) becomes a link; bare URLs become links too */
 function inlineLinks(t) {
   const parts = [];
@@ -396,21 +410,25 @@ function inlineLinks(t) {
   const re = /\[([^\]]+)\]\((https?:\/\/[^\s)]+(?:\([^\s)]*\))?[^\s)]*)\)/g;
   let m;
   while ((m = re.exec(t))) {
-    parts.push(esc(t.slice(last, m.index)).replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener">$1</a>'));
-    parts.push(`<a href="${esc(m[2])}" target="_blank" rel="noopener">${esc(m[1])}</a>`);
+    parts.push(fmt(esc(t.slice(last, m.index)).replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener">$1</a>')));
+    parts.push(`<a href="${esc(m[2])}" target="_blank" rel="noopener">${fmt(esc(m[1]))}</a>`);
     last = re.lastIndex;
   }
-  parts.push(esc(t.slice(last)).replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener">$1</a>'));
+  parts.push(fmt(esc(t.slice(last)).replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener">$1</a>')));
   return parts.join("");
 }
-const stripLinks = (t) => t.replace(/\[([^\]]+)\]\([^)]*\)/g, "$1");
+const stripLinks = (t) => t.replace(/\[([^\]]+)\]\([^)]*\)/g, "$1").replace(/\s*\{\.(justify|center|right)\}/g, "").replace(/\*/g, "");
 
 function renderContent(text) {
   return text.split(/\n{2,}/).map((para) => {
-    const t = para.trim();
+    let t = para.trim(), align = "";
+    const am = t.match(/\s*\{\.(justify|center|right)\}$/);
+    if (am) { align = ` class="al-${am[1]}"`; t = t.slice(0, am.index); }
     const yt = t.match(/^https?:\/\/(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|shorts\/))([\w-]{11})\S*$/);
     if (yt) return `<div class="video${t.includes("/shorts/") ? " short" : ""}"><iframe src="https://www.youtube-nocookie.com/embed/${yt[1]}" title="Video" loading="lazy" allowfullscreen></iframe></div>`;
-    return `<p>${inlineLinks(t)}</p>`;
+    const lines = t.split("\n");
+    if (lines.every((l) => /^- /.test(l))) return `<ul>${lines.map((l) => `<li>${inlineLinks(l.slice(2))}</li>`).join("")}</ul>`;
+    return `<p${align}>${inlineLinks(t)}</p>`;
   }).join("");
 }
 
