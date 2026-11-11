@@ -343,7 +343,11 @@ const pages = {
     $("#post-title").textContent = p.title;
     $("#post-meta").textContent = `${fmtDate(p.date)} · ${p.category} · ${p.author}`;
     let media = "";
-    if (p.media && p.media.youtube) media = `<div class="video${p.media.short ? " short" : ""}"><iframe src="https://www.youtube-nocookie.com/embed/${p.media.youtube}" title="${esc(p.title)} video" loading="lazy" allowfullscreen></iframe></div>`;
+    if (p.media && p.media.youtube) {
+      const ids = [p.media.youtube, ...(p.media.more || [])];
+      const one = (id, i) => `<div class="video${p.media.short ? " short" : ""}"><iframe src="https://www.youtube-nocookie.com/embed/${id}" title="${esc(p.title)} video ${i + 1}" loading="lazy" allowfullscreen></iframe></div>`;
+      media = ids.length > 1 ? `<div class="video-row">${ids.map(one).join("")}</div>` : one(ids[0], 0);
+    }
     else if (p.media && p.media.image) media = `<img class="post-image" src="${p.media.image}" alt="">`;
     el.innerHTML = media + renderContent(p.content);
   },
