@@ -474,8 +474,7 @@ function openMemorial(m) {
       <dt>Racetrack</dt><dd>${esc(m.track)}</dd>
       ${m.age ? `<dt>Age</dt><dd>${esc(m.age.replace(/Y$/i, " years"))}</dd>` : ""}
       ${m.colorSex ? `<dt>Color / sex</dt><dd>${esc(describeColorSex(m.colorSex))}</dd>` : ""}
-      <dt>Injury</dt><dd>${esc(m.incident)}</dd>
-      ${m.outcome ? `<dt>Outcome</dt><dd>${esc(m.outcome)}</dd>` : ""}
+      <dt>Cause of death</dt><dd>${esc(m.incident)}</dd>
       ${m.confirmedBy ? `<dt>Confirmed by</dt><dd>${esc(m.confirmedBy)}</dd>` : ""}
     </dl>
     <p class="btn-row mt">${[["reportLink", "Source report"], ["horseData", "Racing record"], ["socialPost", "More details"]].filter(([k]) => /^https?:/.test(m[k] || "")).map(([k, l]) => `<a class="btn btn--outline" href="${esc(m[k])}" target="_blank" rel="noopener">${l}</a>`).join("")}</p>
