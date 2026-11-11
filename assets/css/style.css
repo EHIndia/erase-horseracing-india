@@ -292,3 +292,11 @@ dialog .close { position: absolute; top: 10px; right: 10px; background: var(--bl
 .al-right { text-align: right; }
 .prose .video-row { display: flex; flex-wrap: wrap; gap: 16px; justify-content: center; margin: 0 0 1.4em; }
 .prose .video-row .video.short { width: calc((100% - 32px) / 3); min-width: 200px; max-width: 260px; margin: 0; }
+.prose .ig-embed { max-width: 420px; margin: 0 auto 1.4em; text-align: center; }
+.prose .ig-embed iframe { width: 100%; height: 640px; border: 1px solid #ecd9c1; border-radius: 8px; background: #fff; }
+.prose .ig-embed a { display: inline-block; margin-top: 6px; font-size: .85rem; font-weight: 700; }
+.prose .ig-card { display: flex; align-items: center; gap: 16px; max-width: 420px; margin: 0 auto 1.6em; padding: 22px 24px; border-radius: 12px; background: var(--brown); color: var(--white); text-decoration: none; }
+.prose .ig-card:hover { background: var(--rust); color: var(--white); }
+.prose .ig-card svg { width: 44px; height: 44px; fill: var(--sand); flex: none; }
+.prose .ig-card b { display: block; font-family: var(--font-head); font-size: 1.05rem; }
+.prose .ig-card small { color: var(--sand); font-size: .85rem; }

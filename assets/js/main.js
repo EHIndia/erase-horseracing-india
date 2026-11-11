@@ -349,6 +349,8 @@ const pages = {
       media = ids.length > 1 ? `<div class="video-row">${ids.map(one).join("")}</div>` : one(ids[0], 0);
     }
     else if (p.media && p.media.image) media = `<img class="post-image" src="${p.media.image}" alt="">`;
+    else if (p.media && p.media.instagram && p.media.embed === false) media = `<a class="ig-card" href="https://www.instagram.com/p/${p.media.instagram}/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="${ICONS.instagram}"/></svg><span><b>Watch the video on Instagram</b>${p.media.by ? `<small>@${esc(p.media.by)}</small>` : ""}</span></a>`;
+    else if (p.media && p.media.instagram) media = `<div class="ig-embed"><iframe src="https://www.instagram.com/p/${p.media.instagram}/embed/" title="${esc(p.title)} Instagram post" loading="lazy" scrolling="no" allowtransparency="true"></iframe><a href="https://www.instagram.com/p/${p.media.instagram}/" target="_blank" rel="noopener">View on Instagram</a></div>`;
     el.innerHTML = media + renderContent(p.content);
   },
 
