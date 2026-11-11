@@ -139,7 +139,7 @@ p { margin: 0 0 1em; }
 .card-body .btn { margin-top: auto; align-self: flex-start; }
 .card-img { aspect-ratio: 16 / 10; object-fit: cover; width: 100%; background: var(--sand-light); }
 .card-ph { aspect-ratio: 16 / 10; background: linear-gradient(135deg, var(--brown), var(--rust)); display: flex; align-items: center; justify-content: center; }
-.card-ph img { width: 72px; opacity: .85; }
+.card-ph img { width: 80%; max-height: 80%; object-fit: contain; opacity: .9; }
 .memorial-card .card-ph img { width: 80%; max-height: 80%; object-fit: contain; opacity: .9; }
 .meta { font-size: .8rem; color: var(--rust); font-weight: 700; font-family: var(--font-head); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 6px; }
 .card h3 a { text-decoration: none; color: var(--brown); }
@@ -300,3 +300,8 @@ dialog .close { position: absolute; top: 10px; right: 10px; background: var(--bl
 .prose .ig-card svg { width: 44px; height: 44px; fill: var(--sand); flex: none; }
 .prose .ig-card b { display: block; font-family: var(--font-head); font-size: 1.05rem; }
 .prose .ig-card small { color: var(--sand); font-size: .85rem; }
+.prose .ig-row { display: flex; flex-wrap: wrap; gap: 16px; justify-content: center; margin: 0 0 1.4em; }
+.prose .ig-row .ig-embed { flex: 1 1 280px; max-width: 330px; margin: 0; }
+.prose .post-gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin: 0 0 1.4em; }
+.prose .post-gallery { align-items: start; }
+.prose .post-gallery img { width: 100%; height: auto; border-radius: 8px; border: 1px solid #ecd9c1; }

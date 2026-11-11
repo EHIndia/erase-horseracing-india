@@ -348,9 +348,14 @@ const pages = {
       const one = (id, i) => `<div class="video${p.media.short ? " short" : ""}"><iframe src="https://www.youtube-nocookie.com/embed/${id}" title="${esc(p.title)} video ${i + 1}" loading="lazy" allowfullscreen></iframe></div>`;
       media = ids.length > 1 ? `<div class="video-row">${ids.map(one).join("")}</div>` : one(ids[0], 0);
     }
+    else if (p.media && p.media.images) media = `<div class="post-gallery">${p.media.images.map((src) => `<a href="${src}" target="_blank" rel="noopener"><img src="${src}" alt="" loading="lazy"></a>`).join("")}</div>`;
     else if (p.media && p.media.image) media = `<img class="post-image" src="${p.media.image}" alt="">`;
     else if (p.media && p.media.instagram && p.media.embed === false) media = `<a class="ig-card" href="https://www.instagram.com/p/${p.media.instagram}/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="${ICONS.instagram}"/></svg><span><b>Watch the video on Instagram</b>${p.media.by ? `<small>@${esc(p.media.by)}</small>` : ""}</span></a>`;
-    else if (p.media && p.media.instagram) media = `<div class="ig-embed"><iframe src="https://www.instagram.com/p/${p.media.instagram}/embed/" title="${esc(p.title)} Instagram post" loading="lazy" scrolling="no" allowtransparency="true"></iframe><a href="https://www.instagram.com/p/${p.media.instagram}/" target="_blank" rel="noopener">View on Instagram</a></div>`;
+    else if (p.media && p.media.instagram) {
+      const ids = [p.media.instagram, ...(p.media.igMore || [])];
+      const one = (id) => `<div class="ig-embed"><iframe src="https://www.instagram.com/p/${id}/embed/" title="${esc(p.title)} Instagram post" loading="lazy" scrolling="no" allowtransparency="true"></iframe><a href="https://www.instagram.com/p/${id}/" target="_blank" rel="noopener">View on Instagram</a></div>`;
+      media = ids.length > 1 ? `<div class="ig-row">${ids.map(one).join("")}</div>` : one(ids[0]);
+    }
     el.innerHTML = media + renderContent(p.content);
   },
 
