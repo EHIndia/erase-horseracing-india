@@ -18,7 +18,7 @@ Static website (plain HTML, CSS, and JavaScript). No build step. Hosted on GitHu
 ## Editing content
 Most content lives in the `data/` folder as JSON:
 
-- `data/deaths.json`: Death Map and death count. Each record is `{ "track": "Pune", "year": 2025, "deaths": 3 }`. Track ids must match the `tracks` list. Set `"interim": false` once the full dataset is in, to hide the "Interim data" notice.
+- `data/deaths.json`: Death Map and death count. Each record is `{ "track": "Pune", "year": 2025, "source": "public", "deaths": 3 }`. `source` is `public` (incident reports and news) or `official` (BTC records obtained via RTI). Track ids must match the `tracks` list. `highlight` marks the track drawn in red and not to scale (currently Bangalore). Deaths found in both sources must be counted once.
 - `data/memorials.json`: one entry per horse. Put photos in `assets/img/horses/`.
 - `data/posts.json`: blog posts. `category` is one of `News`, `Updates`, `Write-ups`. In `content`, separate paragraphs with a blank line. A YouTube link on its own line becomes an embedded video.
 - `data/sections.json`: the "What is horseracing?" sections.

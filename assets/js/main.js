@@ -120,9 +120,9 @@ function renderLayout() {
 /* ---------- death data ---------- */
 async function loadDeaths() {
   const d = await getJSON("data/deaths.json");
-  const years = [...new Set(d.records.map((r) => r.year))].sort();
-  const count = (track, year) =>
-    d.records.filter((r) => (!track || r.track === track) && (year === "total" || r.year === year)).reduce((a, r) => a + r.deaths, 0);
+  const years = [...new Set(d.records.map((r) => r.year))].sort((a, b) => b - a); // newest first
+  const count = (track, year, source) =>
+    d.records.filter((r) => (!track || r.track === track) && (year === "total" || r.year === year) && (!source || r.source === source)).reduce((a, r) => a + r.deaths, 0);
   return { ...d, years, count, total: count(null, "total") };
 }
 
@@ -145,23 +145,28 @@ const LABEL_SIDE = { Mumbai: "left", Mysore: "left", Ooty: "below", Pune: "right
 
 async function initDeathMap(root, { compact = false } = {}) {
   const [data, svgText] = await Promise.all([loadDeaths(), fetch("assets/img/india.svg").then((r) => r.text())]);
+  const HL = data.highlight || {};
+  const isHL = (id) => id === HL.track;
   let year = "total", sortKey = "total", sortDir = -1, active = null;
+  const fmtN = (n) => n.toLocaleString("en-US");
+  const yearLabel = () => (year === "total" ? "all years" : year);
 
   root.innerHTML = `
-    ${data.interim ? `<div class="notice"><b>Interim data.</b> These counts come only from the memorial records published on this site. The full dataset will replace them.</div>` : ""}
     <div class="map-toolbar" role="group" aria-label="Choose year">
       <span class="lbl">Year</span>
       ${["total", ...data.years].map((y) => `<button class="chip" data-year="${y}" aria-pressed="${y === "total"}">${y === "total" ? "All years" : y}</button>`).join("")}
     </div>
     <div class="map-wrap">
       <div class="map-panel"><div class="india-map">${svgText}<div class="map-tip"></div></div>
-        <p class="source">Map: simplemaps.com. Bubble size shows the number of documented deaths at each racetrack.</p></div>
+        ${HL.track ? `<p class="map-legend"><span class="dot dot--hl" style="background:${HL.color}"></span>${esc(HL.track)}: not to scale*<span class="dot"></span>Other racetracks</p>` : ""}
+        <p class="source">Bubble size shows documented deaths at each racetrack. Map: simplemaps.com.</p></div>
       <div class="map-panel">
         <p class="map-total"></p>
         <div class="bars"></div>
+        ${HL.note ? `<p class="hl-note"><b>*</b> ${esc(HL.note)}</p>` : ""}
         ${compact ? `<p class="mt"><a class="btn btn--primary" href="death-map.html">Explore the full map</a></p>` : `
         <div class="table-scroll"><table class="data-table"><thead></thead><tbody></tbody><tfoot></tfoot></table></div>
-        <p class="source">Source: ${esc(data.source)}. Click a column heading to sort.</p>`}
+        <p class="source">Scroll sideways to see earlier years. Click a column heading to sort.</p>`}
       </div>
     </div>`;
 
@@ -172,14 +177,15 @@ async function initDeathMap(root, { compact = false } = {}) {
   const g = document.createElementNS(NS, "g");
   svg.append(g);
   const nodes = {};
-  data.tracks.forEach((t) => {
+  // draw the highlighted (largest) bubble first so smaller ones sit on top
+  [...data.tracks].sort((a, b) => (isHL(b.id) ? 1 : 0) - (isHL(a.id) ? 1 : 0)).forEach((t) => {
     const [x, y] = project(t.lat, t.lon);
     const c = document.createElementNS(NS, "circle");
-    c.setAttribute("cx", x); c.setAttribute("cy", y); c.setAttribute("class", "bubble");
+    c.setAttribute("cx", x); c.setAttribute("cy", y); c.setAttribute("class", "bubble" + (isHL(t.id) ? " bubble--hl" : ""));
+    if (isHL(t.id)) c.style.fill = HL.color;
     c.setAttribute("tabindex", "0");
     const lb = document.createElementNS(NS, "text");
     lb.setAttribute("class", "bubble-label"); lb.setAttribute("y", y + 6);
-    lb.textContent = t.id;
     g.append(c, lb);
     nodes[t.id] = { c, lb, x, y, t };
     const show = () => {
@@ -187,7 +193,9 @@ async function initDeathMap(root, { compact = false } = {}) {
       const box = $(".india-map", root).getBoundingClientRect(), cb = c.getBoundingClientRect();
       tip.style.left = cb.left - box.left + cb.width / 2 + "px";
       tip.style.top = cb.top - box.top + "px";
-      tip.innerHTML = `<b>${esc(t.name)}</b><br>${v} documented death${v === 1 ? "" : "s"} (${year === "total" ? "all years" : year})`;
+      const off = data.count(t.id, year, "official"), pub = data.count(t.id, year, "public");
+      tip.innerHTML = `<b>${esc(t.name)}</b><br>${fmtN(v)} documented death${v === 1 ? "" : "s"} (${yearLabel()})` +
+        (off ? `<br><span class="tip-sub">${fmtN(off)} from official club records (RTI), ${fmtN(pub)} from public reports</span>` : "");
       tip.style.opacity = 1;
       highlight(t.id);
     };
@@ -203,12 +211,16 @@ async function initDeathMap(root, { compact = false } = {}) {
   }
 
   function draw() {
-    const max = Math.max(1, ...data.tracks.map((t) => data.count(t.id, "total")));
+    // scale everything to the largest *non-highlighted* track; the highlighted track is capped (not to scale)
+    const others = data.tracks.filter((t) => !isHL(t.id));
+    const max = Math.max(1, ...others.map((t) => data.count(t.id, "total")));
     const yearTotal = data.count(null, year);
-    $(".map-total", root).textContent = `${yearTotal} documented death${yearTotal === 1 ? "" : "s"} ${year === "total" ? "across all years" : "in " + year}`;
+    $(".map-total", root).textContent = `${fmtN(yearTotal)} documented death${yearTotal === 1 ? "" : "s"} ${year === "total" ? "across all years" : "in " + year}`;
     Object.values(nodes).forEach(({ c, lb, x, t }) => {
       const v = data.count(t.id, year);
-      const r = v ? 8 + 26 * Math.sqrt(v / max) : 6;
+      let r = v ? 8 + 26 * Math.sqrt(v / max) : 6;
+      const capped = isHL(t.id) && r > 42;
+      if (capped) r = 42;
       c.setAttribute("r", r);
       c.classList.toggle("zero", !v);
       const side = LABEL_SIDE[t.id] || "right";
@@ -217,12 +229,17 @@ async function initDeathMap(root, { compact = false } = {}) {
       lb.setAttribute("x", side === "left" ? x - r - 6 : vert ? x : x + r + 6);
       lb.setAttribute("y", side === "below" ? y0 + r + 18 : side === "above" ? y0 - r - 7 : y0 + 6);
       lb.setAttribute("text-anchor", side === "left" ? "end" : vert ? "middle" : "start");
-      lb.textContent = `${t.id} ${v}`;
+      lb.textContent = `${t.id} ${fmtN(v)}${isHL(t.id) && v ? "*" : ""}`;
+      lb.classList.toggle("bubble-label--hl", isHL(t.id));
     });
     const rows = data.tracks.map((t) => ({ t, v: data.count(t.id, year) })).sort((a, b) => b.v - a.v);
-    const bmax = Math.max(1, ...rows.map((r) => r.v));
+    const bmax = Math.max(1, ...rows.filter((r) => !isHL(r.t.id)).map((r) => r.v));
     $(".bars", root).innerHTML = rows
-      .map(({ t, v }) => `<div class="bar-row" data-track="${t.id}" title="${esc(t.name)}"><span class="name">${t.id}</span><span class="bar-track"><span class="bar-fill" style="width:${(v / bmax) * 100}%"></span></span><span class="val">${v}</span></div>`)
+      .map(({ t, v }) => {
+        const hl = isHL(t.id), over = hl && v > bmax;
+        const w = over ? 100 : Math.min(100, (v / bmax) * 100);
+        return `<div class="bar-row${hl ? " bar-row--hl" : ""}" data-track="${t.id}" title="${esc(t.name)}"><span class="name">${t.id}</span><span class="bar-track"><span class="bar-fill${over ? " bar-fill--break" : ""}" style="width:${w}%${hl ? `;background-color:${HL.color}` : ""}"></span></span><span class="val">${fmtN(v)}${hl && v ? "*" : ""}</span></div>`;
+      })
       .join("");
     $$(".bar-row", root).forEach((b) => {
       b.addEventListener("mouseenter", () => highlight(b.dataset.track));
@@ -232,15 +249,16 @@ async function initDeathMap(root, { compact = false } = {}) {
   }
 
   function drawTable() {
-    const cols = [...data.years, "total"];
+    const cols = [...data.years, "total"]; // newest year first, Total pinned on the right
     const rows = data.tracks.map((t) => ({ name: t.id, full: t.name, ...Object.fromEntries(cols.map((c) => [c, data.count(t.id, c)])) }));
     rows.sort((a, b) => (sortKey === "name" ? a.name.localeCompare(b.name) * -sortDir : (a[sortKey] - b[sortKey]) * sortDir));
     const arrow = (k) => (k === sortKey ? (sortDir < 0 ? " ▼" : " ▲") : "");
-    $("thead", root).innerHTML = `<tr><th data-k="name">Racetrack${arrow("name")}</th>${cols.map((c) => `<th data-k="${c}">${c === "total" ? "Total" : c}${arrow(c)}</th>`).join("")}</tr>`;
-    $("tbody", root).innerHTML = rows.map((r) => `<tr><td title="${esc(r.full)}">${r.name}</td>${cols.map((c) => `<td>${r[c]}</td>`).join("")}</tr>`).join("");
-    $("tfoot", root).innerHTML = `<tr><td>All tracks</td>${cols.map((c) => `<td>${data.count(null, c)}</td>`).join("")}</tr>`;
+    const cls = (c) => (c === "total" ? ' class="sticky-r"' : "");
+    $("thead", root).innerHTML = `<tr><th data-k="name" class="sticky-l">Racetrack${arrow("name")}</th>${cols.map((c) => `<th data-k="${c}"${cls(c)}>${c === "total" ? "Total" : c}${arrow(c)}</th>`).join("")}</tr>`;
+    $("tbody", root).innerHTML = rows.map((r) => `<tr${isHL(r.name) ? ' class="row-hl"' : ""}><td class="sticky-l" title="${esc(r.full)}">${r.name}${isHL(r.name) ? "*" : ""}</td>${cols.map((c) => `<td${cls(c)}>${r[c] ? fmtN(r[c]) : '<span class="zero-val">0</span>'}</td>`).join("")}</tr>`).join("");
+    $("tfoot", root).innerHTML = `<tr><td class="sticky-l">All tracks</td>${cols.map((c) => `<td${cls(c)}>${fmtN(data.count(null, c))}</td>`).join("")}</tr>`;
     $$("thead th", root).forEach((th) => th.addEventListener("click", () => {
-      const k = th.dataset.k;
+      const k = th.dataset.k === "name" || th.dataset.k === "total" ? th.dataset.k : Number(th.dataset.k);
       sortDir = sortKey === k ? -sortDir : -1;
       sortKey = k;
       drawTable();
@@ -295,7 +313,9 @@ const pages = {
     const d = await loadDeaths();
     animateNumber($("#death-count"), d.total);
     $("#track-count").textContent = d.tracks.length;
-    $("#year-span").textContent = `${d.years[0]} to ${d.years[d.years.length - 1]}`;
+    $("#official-count").textContent = d.count(null, "total", "official").toLocaleString("en-US");
+    $("#public-count").textContent = d.count(null, "total", "public").toLocaleString("en-US");
+    $("#year-span").textContent = `${Math.min(...d.years)} to ${Math.max(...d.years)}`;
     initDeathMap($("#full-map"));
   },
 

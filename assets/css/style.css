@@ -305,3 +305,37 @@ dialog .close { position: absolute; top: 10px; right: 10px; background: var(--bl
 .prose .post-gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin: 0 0 1.4em; }
 .prose .post-gallery { align-items: start; }
 .prose .post-gallery img { width: 100%; height: auto; border-radius: 8px; border: 1px solid #ecd9c1; }
+
+/* Death map: highlighted (not-to-scale) track, legend, sticky table */
+.bubble--hl { stroke: #b8331f; opacity: .92; }
+.bubble--hl.active, .bubble--hl:hover { opacity: 1; }
+.bubble-label--hl { fill: #c2381f; }
+.map-legend { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; font-size: .82rem; color: var(--muted); margin: 10px 0 0; }
+.map-legend .dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; background: var(--rust); border: 1.5px solid var(--brown); margin-left: 6px; }
+.map-legend .dot--hl { border-color: #b8331f; margin-left: 0; }
+.bar-row--hl .name, .bar-row--hl .val { color: #c2381f; }
+.bar-fill--break { background-image: linear-gradient(115deg, transparent 0 86%, #fff 86% 88%, transparent 88% 90%, #fff 90% 92%, transparent 92%); }
+.hl-note { font-size: .8rem; color: var(--muted); margin: 12px 0 0; line-height: 1.5; }
+.tip-sub { color: #e8d3b8; font-size: .78rem; }
+.map-tip { white-space: normal; width: max-content; max-width: 260px; text-align: center; }
+.table-scroll { overflow-x: auto; margin-top: 16px; border: 1px solid #ecd9c1; border-radius: 8px; }
+.table-scroll .data-table { margin-top: 0; min-width: 640px; }
+.data-table th, .data-table td { background: var(--white); }
+.data-table .sticky-l { position: sticky; left: 0; z-index: 2; box-shadow: 1px 0 0 #ecd9c1; text-align: left; }
+.data-table .sticky-r { position: sticky; right: 0; z-index: 2; box-shadow: -1px 0 0 #ecd9c1; font-weight: 800; color: var(--brown); background: #fbf3e8; }
+.data-table thead th.sticky-r { background: #fbf3e8; }
+.data-table tr.row-hl td { color: #c2381f; }
+.data-table tr.row-hl td.sticky-r { color: #c2381f; }
+.data-table .zero-val { color: #c9b296; }
+.data-table tfoot td { background: #fbf3e8; }
+
+/* Death map page: notes, RTI table, estimates */
+.data-notes { max-width: 880px; }
+.data-notes .checklist { margin: 0 0 1em; }
+.rti-table { width: 100%; border-collapse: collapse; font-size: .95rem; }
+.rti-table th, .rti-table td { padding: 10px 8px; border-bottom: 1px solid #ecd9c1; text-align: left; }
+.rti-table th:last-child, .rti-table td:last-child { text-align: right; font-weight: 800; color: var(--brown); }
+.rti-table th { font-family: var(--font-head); color: var(--brown); }
+.rti-table tfoot td { font-weight: 800; color: var(--brown); border-bottom: 0; font-size: 1.05rem; }
+.estimate b { display: block; font-family: var(--font-head); font-weight: 900; font-size: 2.6rem; line-height: 1; color: #c2381f; margin-bottom: 8px; }
+.estimate h3 { font-size: 1.05rem; }

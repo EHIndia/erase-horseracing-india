@@ -12,8 +12,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/style.css?v=202611110918">
-<script src="assets/js/main.js?v=202611110918" defer></script>
+<link rel="stylesheet" href="assets/css/style.css?v=202611111432">
+<script src="assets/js/main.js?v=202611111432" defer></script>
 </head>
 <body data-page="deathmap">
 <main id="main">
@@ -21,13 +21,57 @@
 
 <section class="section"><div class="container">
   <div class="counter"><div class="num" id="death-count">0</div><div class="label">Documented deaths</div></div>
-  <div class="stat-grid" style="max-width:520px;margin:28px auto 40px">
+  <div class="stat-grid" style="max-width:880px;margin:28px auto 40px">
+    <div class="stat"><b id="official-count">0</b><span>From official club records (RTI)</span></div>
+    <div class="stat"><b id="public-count">0</b><span>From public reports</span></div>
     <div class="stat"><b id="track-count">0</b><span>Racetracks</span></div>
     <div class="stat"><b id="year-span">-</b><span>Years covered</span></div>
   </div>
   <div id="full-map"></div>
-  <div class="section-head mt" style="text-align:left;max-width:none"><h3>Understanding the data</h3>
-  <p>These numbers include only deaths that have been publicly documented. Many incidents happen during training or away from race days and are never reported, so the true toll is likely far higher.</p></div>
+
+  <div class="data-notes mt">
+    <h3>Understanding the data</h3>
+    <p>These numbers combine two sources, and a death that appears in both is counted once.</p>
+    <ul class="checklist">
+      <li><b>Official club records, obtained through RTI.</b> Deaths that racing clubs themselves reported to the Animal Welfare Board of India (see below).</li>
+      <li><b>Public reports.</b> From November 2023 onward, we document deaths reported in racing club incident reports and the news.</li>
+    </ul>
+    <p>Official records cover only some tracks and some years: Bangalore (April 2018 to March 2025), Hyderabad (April 2022 to March 2023), and Mumbai and Pune (July 2019 to February 2021). No official records have been received from any other racetrack or period. Bangalore's much higher count reflects the records available to us, not necessarily more deaths than at other tracks. The Bangalore Turf Club records for April to September 2020 were not included in what we received, and Hyderabad's 34 deaths were reported without dates, so they are shown as 25 in 2022 and 9 in 2023 in proportion to the months.</p>
+    <p>Many incidents happen during training or away from race days and are never reported, so the true toll at every track is likely far higher.</p>
+  </div>
+</div></section>
+
+<section class="section section--light" id="official-records"><div class="container">
+  <div class="section-head"><div class="eyebrow">Official records</div><h2>What the racing clubs reported</h2>
+    <p>Racing clubs are required to report every death. Most of those reports have never been made public.</p></div>
+  <div class="grid grid-2" style="align-items:start">
+    <div>
+      <p>Under Rule 12 of the Performing Animals (Registration) Rules, 2001, registered animal owners must submit a monthly, vet-certified report on the health, births, and deaths of their animals to the Animal Welfare Board of India (AWBI) by the 7th of every following month.</p>
+      <p>We asked the AWBI, under the Right to Information Act, 2005, for all racehorse deaths across India from 2001 to 2025. The request was disposed of with records covering only three racing clubs and a few years, about 5% of the data we requested.</p>
+    </div>
+    <div class="contact-card">
+      <table class="rti-table">
+        <thead><tr><th>Racetrack</th><th>Period</th><th>Deaths</th></tr></thead>
+        <tbody>
+          <tr><td>Bangalore</td><td>Apr 2018 to Mar 2025</td><td>228</td></tr>
+          <tr><td>Hyderabad</td><td>Apr 2022 to Mar 2023</td><td>34</td></tr>
+          <tr><td>Mumbai and Pune</td><td>Jul 2019 to Feb 2021</td><td>12</td></tr>
+        </tbody>
+        <tfoot><tr><td colspan="2">Confirmed dead in official records</td><td>274</td></tr></tfoot>
+      </table>
+      <p class="source">Sources: Bangalore Turf Club, Hyderabad Race Club and Royal Western India Turf Club records supplied to the AWBI. Of the 12 Mumbai and Pune deaths, 6 were at Pune (2019) and 6 at Mumbai (2020 and 2021).</p>
+    </div>
+  </div>
+
+  <div class="section-head mt"><div class="eyebrow">A conservative estimate</div><h2>What the records suggest</h2>
+    <p>The official records are a small window. Here is what they point to across India.</p></div>
+  <div class="grid grid-3">
+    <div class="action-card estimate"><b>~33</b><h3>deaths a year at a single racetrack</h3><p>Bangalore Turf Club reported 228 deaths in seven years.</p></div>
+    <div class="action-card estimate"><b>~200</b><h3>deaths a year across India</h3><p>About 33 a year at each racing center, counting Mumbai and Pune as one and Chennai and Ooty as one, since the same horses move between them.</p></div>
+    <div class="action-card estimate"><b>5,000+</b><h3>deaths in the last 25 years</h3><p>About 200 a year across all racetracks in India since 2001.</p></div>
+  </div>
+  <p class="center mt" style="max-width:760px;margin-left:auto;margin-right:auto">This estimate does not include horses who die before they are sold into racing, or horses who are killed after they retire from it.</p>
+  <p class="center" style="max-width:760px;margin-left:auto;margin-right:auto">India breeds hundreds of racehorses every year: there were <a href="https://www.thoroughbredracing.com/articles/6878/assessing-health-india-bloodstock-industry/" target="_blank" rel="noopener">1,800 foals in 2018 and 850 in 2026</a>. Every one of them is bred to be exploited for entertainment.</p>
 </div></section>
 </main>
 </body>

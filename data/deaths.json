@@ -1,6 +1,6 @@
 {
  "interim": false,
- "source": "Erase Horseracing India records, compiled from racing club incident reports and news sources",
+ "source": "Erase Horseracing India records compiled from racing club incident reports and news, and official racing club records obtained from the Animal Welfare Board of India through RTI",
  "tracks": [
   {
    "id": "Bangalore",
@@ -60,98 +60,201 @@
  "records": [
   {
    "track": "Bangalore",
+   "year": 2018,
+   "source": "official",
+   "deaths": 43
+  },
+  {
+   "track": "Bangalore",
+   "year": 2019,
+   "source": "official",
+   "deaths": 44
+  },
+  {
+   "track": "Bangalore",
+   "year": 2020,
+   "source": "official",
+   "deaths": 21
+  },
+  {
+   "track": "Bangalore",
+   "year": 2021,
+   "source": "official",
+   "deaths": 31
+  },
+  {
+   "track": "Bangalore",
+   "year": 2022,
+   "source": "official",
+   "deaths": 35
+  },
+  {
+   "track": "Bangalore",
+   "year": 2023,
+   "source": "official",
+   "deaths": 29
+  },
+  {
+   "track": "Bangalore",
    "year": 2024,
-   "deaths": 2
+   "source": "official",
+   "deaths": 18
   },
   {
    "track": "Bangalore",
    "year": 2025,
-   "deaths": 11
+   "source": "official",
+   "deaths": 7
+  },
+  {
+   "track": "Bangalore",
+   "year": 2025,
+   "source": "public",
+   "deaths": 9
   },
   {
    "track": "Bangalore",
    "year": 2026,
+   "source": "public",
    "deaths": 3
   },
   {
    "track": "Chennai",
    "year": 2024,
+   "source": "public",
    "deaths": 3
   },
   {
    "track": "Chennai",
    "year": 2025,
+   "source": "public",
    "deaths": 3
   },
   {
    "track": "Delhi",
    "year": 2026,
+   "source": "public",
    "deaths": 2
   },
   {
    "track": "Hyderabad",
+   "year": 2022,
+   "source": "official",
+   "deaths": 25
+  },
+  {
+   "track": "Hyderabad",
+   "year": 2023,
+   "source": "official",
+   "deaths": 9
+  },
+  {
+   "track": "Hyderabad",
    "year": 2025,
+   "source": "public",
    "deaths": 1
   },
   {
    "track": "Hyderabad",
    "year": 2026,
+   "source": "public",
    "deaths": 3
   },
   {
    "track": "Kolkata",
    "year": 2025,
+   "source": "public",
+   "deaths": 3
+  },
+  {
+   "track": "Mumbai",
+   "year": 2020,
+   "source": "official",
+   "deaths": 3
+  },
+  {
+   "track": "Mumbai",
+   "year": 2021,
+   "source": "official",
    "deaths": 3
   },
   {
    "track": "Mumbai",
    "year": 2025,
+   "source": "public",
    "deaths": 2
   },
   {
    "track": "Mumbai",
    "year": 2026,
+   "source": "public",
    "deaths": 2
   },
   {
    "track": "Mysore",
    "year": 2024,
+   "source": "public",
    "deaths": 2
   },
   {
    "track": "Mysore",
    "year": 2025,
+   "source": "public",
    "deaths": 1
   },
   {
    "track": "Mysore",
    "year": 2026,
+   "source": "public",
    "deaths": 2
   },
   {
    "track": "Ooty",
    "year": 2024,
+   "source": "public",
    "deaths": 2
   },
   {
    "track": "Pune",
+   "year": 2019,
+   "source": "official",
+   "deaths": 6
+  },
+  {
+   "track": "Pune",
    "year": 2023,
+   "source": "public",
    "deaths": 1
   },
   {
    "track": "Pune",
    "year": 2024,
+   "source": "public",
    "deaths": 2
   },
   {
    "track": "Pune",
    "year": 2025,
+   "source": "public",
    "deaths": 2
   },
   {
    "track": "Pune",
    "year": 2026,
+   "source": "public",
    "deaths": 3
   }
- ]
+ ],
+ "sources": {
+  "public": "Public reports (racing club incident reports and news), Nov 2023 onward",
+  "official": "Official records supplied by racing clubs to the Animal Welfare Board of India, obtained through RTI: Bangalore Turf Club (Apr 2018 to Mar 2025), Hyderabad Race Club (Apr 2022 to Mar 2023), and Royal Western India Turf Club for Mumbai and Pune (Jul 2019 to Feb 2021)"
+ },
+ "highlight": {
+  "track": "Bangalore",
+  "color": "#fe553b",
+  "note": "Not to scale. Bangalore includes 228 deaths from Bangalore Turf Club records (April 2018 to March 2025)."
+ },
+ "notes": {
+  "Hyderabad": "Hyderabad Race Club reported 34 deaths for April 2022 to March 2023 without dates; shown as 25 in 2022 and 9 in 2023 in proportion to the months."
+ }
 }
