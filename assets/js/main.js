@@ -19,7 +19,7 @@ const SITE = {
     { label: "Home", href: "index.html" },
     { label: "About", href: "about.html" },
     { label: "What is horseracing?", href: "what-is-horseracing.html" },
-    { label: "Death Map", href: "death-map.html" },
+    { label: "Kill Map", href: "death-map.html" },
     { label: "Memorials", href: "memorials.html" },
     { label: "Blogs", href: "blogs.html" },
     { label: "Take Action", href: "take-action.html" },
@@ -159,7 +159,7 @@ async function initDeathMap(root, { compact = false } = {}) {
     <div class="map-wrap">
       <div class="map-panel"><div class="india-map">${svgText}<div class="map-tip"></div></div>
         ${HL.track ? `<p class="map-legend"><span class="dot dot--hl" style="background:${HL.color}"></span>${esc(HL.track)}: not to scale*<span class="dot"></span>Other racetracks</p>` : ""}
-        <p class="source">Bubble size shows documented deaths at each racetrack. Map: simplemaps.com.</p></div>
+        <p class="source">Bubble size shows documented kills at each racetrack. Map: simplemaps.com.</p></div>
       <div class="map-panel">
         <p class="map-total"></p>
         <div class="bars"></div>
@@ -194,7 +194,7 @@ async function initDeathMap(root, { compact = false } = {}) {
       tip.style.left = cb.left - box.left + cb.width / 2 + "px";
       tip.style.top = cb.top - box.top + "px";
       const off = data.count(t.id, year, "official"), pub = data.count(t.id, year, "public");
-      tip.innerHTML = `<b>${esc(t.name)}</b><br>${fmtN(v)} documented death${v === 1 ? "" : "s"} (${yearLabel()})` +
+      tip.innerHTML = `<b>${esc(t.name)}</b><br>${fmtN(v)} documented kill${v === 1 ? "" : "s"} (${yearLabel()})` +
         (off ? `<br><span class="tip-sub">${fmtN(off)} from official club records (RTI), ${fmtN(pub)} from public reports</span>` : "");
       tip.style.opacity = 1;
       highlight(t.id);
@@ -215,7 +215,7 @@ async function initDeathMap(root, { compact = false } = {}) {
     const others = data.tracks.filter((t) => !isHL(t.id));
     const max = Math.max(1, ...others.map((t) => data.count(t.id, "total")));
     const yearTotal = data.count(null, year);
-    $(".map-total", root).textContent = `${fmtN(yearTotal)} documented death${yearTotal === 1 ? "" : "s"} ${year === "total" ? "across all years" : "in " + year}`;
+    $(".map-total", root).textContent = `${fmtN(yearTotal)} documented kill${yearTotal === 1 ? "" : "s"} ${year === "total" ? "across all years" : "in " + year}`;
     Object.values(nodes).forEach(({ c, lb, x, t }) => {
       const v = data.count(t.id, year);
       let r = v ? 8 + 26 * Math.sqrt(v / max) : 6;
@@ -426,7 +426,7 @@ const pages = {
 
 const STATIC_PAGES = [
   { title: "About us", type: "Page", url: "about.html", text: "mission vision approach legislative action investigation advocacy" },
-  { title: "Death Map", type: "Page", url: "death-map.html", text: "death count map racetracks Bangalore Chennai Mysore Pune Mumbai Delhi Hyderabad Kolkata year statistics" },
+  { title: "Kill Map", type: "Page", url: "death-map.html", text: "kill death count map racetracks Bangalore Chennai Mysore Pune Mumbai Delhi Hyderabad Kolkata year statistics" },
   { title: "Take Action", type: "Page", url: "take-action.html", text: "pledge boycott sign email subscription newsletter sign up social media" },
   { title: "Contact", type: "Page", url: "contact.html", text: "contact volunteer report an incident write to us email" }
 ];
@@ -474,7 +474,7 @@ function openMemorial(m) {
       <dt>Racetrack</dt><dd>${esc(m.track)}</dd>
       ${m.age ? `<dt>Age</dt><dd>${esc(m.age.replace(/Y$/i, " years"))}</dd>` : ""}
       ${m.colorSex ? `<dt>Color / sex</dt><dd>${esc(describeColorSex(m.colorSex))}</dd>` : ""}
-      <dt>Cause of death</dt><dd>${esc(m.incident)}</dd>
+      <dt>Killed</dt><dd>${esc(m.incident)}</dd>
       ${m.confirmedBy ? `<dt>Confirmed by</dt><dd>${esc(m.confirmedBy)}</dd>` : ""}
     </dl>
     <p class="btn-row mt">${[["reportLink", "Source report"], ["horseData", "Racing record"], ["socialPost", "More details"]].filter(([k]) => /^https?:/.test(m[k] || "")).map(([k, l]) => `<a class="btn btn--outline" href="${esc(m[k])}" target="_blank" rel="noopener">${l}</a>`).join("")}</p>

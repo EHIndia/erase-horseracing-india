@@ -8,7 +8,7 @@ Static website (plain HTML, CSS, and JavaScript). No build step. Hosted on GitHu
 | `index.html` | Home |
 | `about.html` | About (mission and team) |
 | `what-is-horseracing.html` | What is horseracing? (cruelty in horseracing) |
-| `death-map.html` | Death Map |
+| `death-map.html` | Kill Map |
 | `memorials.html` | Memorials |
 | `blogs.html`, `blog.html` | Blog list and single post (`blog.html?slug=...`) |
 | `take-action.html` | Pledge, email sign-up, social links |
@@ -18,7 +18,7 @@ Static website (plain HTML, CSS, and JavaScript). No build step. Hosted on GitHu
 ## Editing content
 Most content lives in the `data/` folder as JSON:
 
-- `data/deaths.json`: Death Map and death count. Each record is `{ "track": "Pune", "year": 2025, "source": "public", "deaths": 3 }`. `source` is `public` (incident reports and news) or `official` (BTC records obtained via RTI). Track ids must match the `tracks` list. `highlight` marks the track drawn in red and not to scale (currently Bangalore). Deaths found in both sources must be counted once.
+- `data/deaths.json`: Kill Map and kill count. Each record is `{ "track": "Pune", "year": 2025, "source": "public", "deaths": 3 }`. `source` is `public` (incident reports and news) or `official` (BTC records obtained via RTI). Track ids must match the `tracks` list. `highlight` marks the track drawn in red and not to scale (currently Bangalore). Deaths found in both sources must be counted once.
 - `data/memorials.json`: one entry per horse. Put photos in `assets/img/horses/`.
 - `data/posts.json`: blog posts. `category` is one of `News`, `Updates`, `Write-ups`. In `content`, separate paragraphs with a blank line. A YouTube link on its own line becomes an embedded video.
 - `data/sections.json`: the "What is horseracing?" sections.
@@ -103,7 +103,7 @@ Field rules:
 - `name`: ALL CAPS. Use `UNNAMED HORSE` when there is no name, and describe it in `note` (for example "Two year old"). Leave `note` empty for named horses.
 - `slug`: lowercase letters, numbers, and hyphens only. Must be unique (for unnamed horses add the track and year).
 - `track`: exactly one of `Bangalore`, `Chennai`, `Mysore`, `Pune`, `Mumbai`, `Delhi`, `Hyderabad`, `Kolkata`, `Ooty`.
-- `incident`: the cause of death, shown on the page as "Cause of death".
+- `incident`: how the horse was killed, shown on the page as "Killed".
 - `outcome`: `Euthanized`, `Died`, or empty. Kept in the data but not shown on the page.
 - `image`: `assets/img/horses/<slug>.jpg`, or `null` when there is no photo (the logo is shown instead). Any photo shape works.
 - `confirmedBy`: short name, for example `RWITC`, `BTC`, `MRC`, `MyRC`, `The Hindu`, `Racing Pulse`.
@@ -112,13 +112,13 @@ Field rules:
 
 Style rules: American English, no em dashes or en dashes, and never invent facts, dates, or links.
 
-Adding a memorial does not change the Death Map. Add the death to `data/deaths.json` as well if it is not already counted.
+Adding a memorial does not change the Kill Map. Add the death to `data/deaths.json` as well if it is not already counted.
 
 After editing: check the file at jsonlint.com, add the photo to `assets/img/horses/`, commit in GitHub Desktop, and check the live site (Ctrl+F5).
 
-## Updating the Death Map
+## Updating the Kill Map
 
-The Death Map, the totals, the year chips, and the home page death count are all calculated from `records` in `data/deaths.json`. Never type totals by hand, and do not edit any HTML, CSS, or JS to update numbers.
+The Kill Map, the totals, the year chips, and the home page kill count are all calculated from `records` in `data/deaths.json`. Never type totals by hand, and do not edit any HTML, CSS, or JS to update numbers.
 
 Each record is one count for one racetrack, one year, and one source:
 
@@ -137,16 +137,16 @@ Rules:
 - Do not change `tracks`, `sources`, `highlight`, `notes`, or `interim`.
 - A new year (for example 2027) appears automatically as a year chip and table column.
 
-Some text on the Death Map page is typed, not calculated: the Bangalore note on the map, the RTI table (228, 34, 12, 274), and the estimates. These only change when new RTI documents arrive.
+Some text on the Kill Map page is typed, not calculated: the Bangalore note on the map, the RTI table (228, 34, 12, 274), and the estimates. These only change when new RTI documents arrive.
 
 After editing:
 
 1. Check the file at jsonlint.com.
-2. Compare the new totals on the Death Map and home page with what you expect (old total plus the deaths you added).
+2. Compare the new totals on the Kill Map and home page with what you expect (old total plus the deaths you added).
 3. Commit in GitHub Desktop and check the live site (Ctrl+F5).
 4. If the numbers look wrong, revert the commit in GitHub Desktop (History, right-click the commit, Revert).
 
-A death that has a memorial still needs its own record here. Memorials and the Death Map are updated separately.
+A death that has a memorial still needs its own record here. Memorials and the Kill Map are updated separately.
 
 ## Preview locally
 Run `python3 -m http.server` in this folder and open http://localhost:8000 (opening the files directly will not load the data).
